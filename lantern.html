@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>小灯笼 · The Lantern</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#132329;
+  --ink-2:#1B333B;
+  --ink-3:#24444E;
+  --paper:#F6EFDD;
+  --paper-2:#EADFC4;
+  --lantern:#F0AF3C;
+  --lantern-dim:#8A6425;
+  --seal:#BE4436;
+  --jade:#6FA089;
+  --line:rgba(246,239,221,.14);
+  --muted:rgba(246,239,221,.52);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:"Newsreader",Georgia,serif;
+  font-size:17px;line-height:1.55;
+  min-height:100dvh;
+  padding:0 20px 48px;
+  max-width:520px;margin:0 auto;
+  background-image:radial-gradient(120% 55% at 50% 0%, rgba(240,175,60,.13) 0%, rgba(240,175,60,0) 62%);
+}
+.zh{font-family:"Noto Serif SC","Newsreader",serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.hidden{display:none !important}
+
+/* ---------- lantern signature ---------- */
+header{padding:26px 0 6px;text-align:center}
+#lantern{width:96px;height:126px;display:block;margin:0 auto}
+.rib{transition:opacity .5s ease, fill .5s ease}
+.glow{transition:opacity .7s ease}
+h1{
+  font-family:"Noto Serif SC",serif;font-weight:600;
+  font-size:27px;letter-spacing:.16em;margin:14px 0 2px;
+}
+.sub{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;
+}
+
+/* ---------- shared ---------- */
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--muted);
+}
+.panel{
+  background:var(--ink-2);border:1px solid var(--line);
+  border-radius:3px;padding:18px 18px 20px;margin:14px 0;
+}
+.btn{
+  display:block;width:100%;text-align:left;
+  background:var(--ink-2);border:1px solid var(--line);
+  border-radius:3px;padding:15px 17px;margin:9px 0;
+  transition:background .18s ease,border-color .18s ease;
+}
+.btn:hover,.btn:focus-visible{background:var(--ink-3);border-color:rgba(240,175,60,.4)}
+.btn b{display:block;font-weight:600;font-size:17.5px}
+.btn span{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.btn-lantern{background:var(--lantern);color:#20160A;border-color:var(--lantern)}
+.btn-lantern:hover,.btn-lantern:focus-visible{background:#F7BE58;border-color:#F7BE58}
+.btn-lantern span{color:rgba(32,22,10,.7)}
+.row{display:flex;gap:9px}
+.row>button{flex:1;text-align:center}
+:focus-visible{outline:2px solid var(--lantern);outline-offset:2px}
+
+/* ---------- card ---------- */
+.progress{display:flex;gap:5px;justify-content:center;margin:20px 0 22px}
+.pip{width:26px;height:2px;background:rgba(246,239,221,.18)}
+.pip.on{background:var(--lantern)}
+.pip.miss{background:var(--seal)}
+
+.card{
+  background:var(--paper);color:#20160A;
+  border-radius:3px;padding:34px 22px;text-align:center;
+  min-height:236px;display:flex;flex-direction:column;justify-content:center;
+  box-shadow:0 18px 44px rgba(0,0,0,.34);
+}
+.pool{
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(32,22,10,.5);margin-bottom:20px;
+}
+.prompt{
+  font-family:"Noto Serif SC",serif;font-weight:600;
+  font-size:46px;line-height:1.32;letter-spacing:.05em;
+}
+.prompt.small{font-size:26px;letter-spacing:.02em;line-height:1.55}
+.reveal{border-top:1px solid rgba(32,22,10,.16);margin-top:22px;padding-top:18px}
+.answer{font-family:"Noto Serif SC",serif;font-weight:600;font-size:34px;letter-spacing:.05em}
+.pinyin{font-family:"IBM Plex Mono",monospace;font-size:15px;color:#8A5A18;margin-top:9px;letter-spacing:.04em}
+.english{font-size:17px;color:rgba(32,22,10,.72);margin-top:5px;font-style:italic}
+.tip{font-size:14.5px;color:rgba(32,22,10,.6);margin-top:14px;line-height:1.5}
+
+.tapline{text-align:center;color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;margin-top:18px}
+.miss-btn{border-color:rgba(190,68,54,.5)}
+.miss-btn:hover{background:rgba(190,68,54,.16);border-color:var(--seal)}
+
+/* ---------- lists ---------- */
+.item{border-bottom:1px solid var(--line);padding:12px 0;display:flex;align-items:baseline;gap:12px}
+.item:last-child{border-bottom:none}
+.item .h{font-family:"Noto Serif SC",serif;font-size:20px;font-weight:600;min-width:96px}
+.item .m{font-size:14px;color:var(--muted)}
+select,textarea{
+  width:100%;background:var(--ink);color:var(--paper);
+  border:1px solid var(--line);border-radius:3px;padding:11px;font:inherit;font-size:15px;
+}
+textarea{font-family:"IBM Plex Mono",monospace;font-size:11.5px;min-height:120px}
+p{margin:9px 0}
+.dim{color:var(--muted);font-size:14.5px}
+.big-zh{font-family:"Noto Serif SC",serif;font-size:40px;font-weight:600;text-align:center;letter-spacing:.06em;margin:8px 0 4px;color:var(--lantern)}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <svg id="lantern" viewBox="0 0 96 126" aria-hidden="true">
+    <circle class="glow" id="glow" cx="48" cy="60" r="46" fill="var(--lantern)" opacity="0"/>
+    <rect x="30" y="12" width="36" height="6" rx="1" fill="var(--paper-2)"/>
+    <rect x="30" y="102" width="36" height="6" rx="1" fill="var(--paper-2)"/>
+    <line x1="48" y1="2" x2="48" y2="12" stroke="var(--paper-2)" stroke-width="1.5"/>
+    <path d="M48 108 L48 118 M44 118 L52 118 L48 126 Z" stroke="var(--seal)" stroke-width="1.5" fill="var(--seal)"/>
+    <g id="ribs">
+      <path class="rib" d="M30 18 Q10 60 30 102" fill="none" stroke="var(--lantern-dim)" stroke-width="2"/>
+      <path class="rib" d="M39 18 Q29 60 39 102" fill="none" stroke="var(--lantern-dim)" stroke-width="2"/>
+      <path class="rib" d="M48 18 L48 102" fill="none" stroke="var(--lantern-dim)" stroke-width="2"/>
+      <path class="rib" d="M57 18 Q67 60 57 102" fill="none" stroke="var(--lantern-dim)" stroke-width="2"/>
+      <path class="rib" d="M66 18 Q86 60 66 102" fill="none" stroke="var(--lantern-dim)" stroke-width="2"/>
+    </g>
+  </svg>
+  <h1 class="zh">小灯笼</h1>
+  <p class="sub">The Lantern</p>
+</header>
+
+<main id="app"></main>
+
+<script>
+/* ============================================================
+   THE LANTERN — P3 Higher Chinese nightly deck
+   Five cards. Five minutes. One sentence out loud.
+   Deck seeded from 《欢乐伙伴》3A (L1–L9) and 3B (L10–L17).
+   ============================================================ */
+
+const LESSONS = [
+  {id:1, book:"3A", title:"美丽的愿望"},
+  {id:2, book:"3A", title:"我的朋友和家人"},
+  {id:3, book:"3A", title:"我的好伙伴"},
+  {id:4, book:"3A", title:"奇妙的变化"},
+  {id:5, book:"3A", title:"难忘的一天"},
+  {id:6, book:"3A", title:"是我不好"},
+  {id:7, book:"3A", title:"留张便条"},
+  {id:8, book:"3A", title:"我真能干"},
+  {id:9, book:"3A", title:"我有办法"},
+  {id:10,book:"3B", title:"我住的地方真干净"},
+  {id:11,book:"3B", title:"环保小天使"},
+  {id:12,book:"3B", title:"我爱新加坡"},
+  {id:13,book:"3B", title:"动物世界"},
+  {id:14,book:"3B", title:"奇妙的动物"},
+  {id:15,book:"3B", title:"华文真有趣"},
+  {id:16,book:"3B", title:"学习要认真"},
+  {id:17,book:"3B", title:"好孩子"}
+];
+
+const POOL_LABEL = {ci:"词语", da:"词语搭配", zao:"造句", guan:"关联词", cheng:"成语"};
+
+/* w = 词语: front characters only, reveal pinyin + English
+   d = 搭配: front is the collocation with a gap
+   z = 造句: front is the instruction, reveal is a model sentence
+   g = 关联词: front is a sentence with a gap                     */
+function w(l,c,p,e){return{l,pool:"ci",front:c,ans:c,py:p,en:e};}
+function d(l,front,ans,p,e){return{l,pool:"da",front,ans,py:p,en:e};}
+function z(l,word,p,e,model){return{l,pool:"zao",front:"用「"+word+"」造句",ans:word,py:p,en:e,tip:model};}
+function g(l,front,ans,p,e){return{l,pool:"guan",front,ans,py:p,en:e};}
+function ch(word,p,e){return{l:0,pool:"cheng",front:word,ans:word,py:p,en:e,stretch:true};}
+
+const DECK = [
+  /* ---------- 3A ---------- */
+  w(1,"愿望","yuàn wàng","a wish, an aspiration"),
+  w(1,"保卫","bǎo wèi","to defend, to guard"),
+  w(1,"探索","tàn suǒ","to explore"),
+  w(1,"实现","shí xiàn","to realise, to fulfil"),
+  w(1,"军人","jūn rén","a soldier"),
+  w(1,"努力","nǔ lì","to work hard"),
+  d(1,"实现＿＿","愿望","shí xiàn yuàn wàng","to fulfil a wish"),
+  d(1,"保卫＿＿","国家","bǎo wèi guó jiā","to defend one's country"),
+  g(1,"＿＿我长大以后，我要成为军人。","将来","jiāng lái","in the future"),
+  z(1,"努力","nǔ lì","to work hard","我每天努力练习华文。"),
+
+  w(2,"姓名","xìng míng","full name"),
+  w(2,"阿姨","ā yí","aunt (mother's sister / older woman)"),
+  w(2,"有趣","yǒu qù","interesting, amusing"),
+  w(2,"意思","yì si","meaning"),
+  w(2,"强壮","qiáng zhuàng","strong, sturdy"),
+  w(2,"幸福","xìng fú","happiness, blessed"),
+  d(2,"＿＿目","题","tí mù","title; exam question"),
+  z(2,"有趣","yǒu qù","interesting","这本书很有趣，我看了三遍。"),
+
+  w(3,"伙伴","huǒ bàn","companion, partner"),
+  w(3,"闹钟","nào zhōng","alarm clock"),
+  w(3,"习惯","xí guàn","a habit; to be used to"),
+  w(3,"颜色","yán sè","colour"),
+  w(3,"准时","zhǔn shí","punctual, on time"),
+  w(3,"迟到","chí dào","to arrive late"),
+  d(3,"改＿＿坏习惯","掉","gǎi diào","to get rid of a bad habit"),
+  z(3,"习惯","xí guàn","habit","我习惯早睡早起。"),
+
+  w(4,"变化","biàn huà","change"),
+  w(4,"健康","jiàn kāng","health, healthy"),
+  w(4,"乌龟","wū guī","tortoise"),
+  w(4,"发芽","fā yá","to sprout"),
+  w(4,"青蛙","qīng wā","frog"),
+  g(4,"小树＿＿长＿＿高。","越……越","yuè … yuè","the more … the more"),
+  z(4,"健康","jiàn kāng","healthy","多运动才能保持健康。"),
+
+  w(5,"附近","fù jìn","nearby, vicinity"),
+  w(5,"准备","zhǔn bèi","to prepare"),
+  w(5,"新鲜","xīn xiān","fresh"),
+  w(5,"傍晚","bàng wǎn","dusk, early evening"),
+  w(5,"电脑","diàn nǎo","computer"),
+  g(5,"你要喝水＿＿＿喝果汁？","或者","huò zhě","or"),
+  z(5,"准备","zhǔn bèi","to prepare","妈妈准备了一顿丰盛的晚餐。"),
+
+  w(6,"原谅","yuán liàng","to forgive"),
+  w(6,"应该","yīng gāi","should, ought to"),
+  w(6,"突然","tū rán","suddenly"),
+  w(6,"受伤","shòu shāng","to be injured"),
+  w(6,"及时","jí shí","in time, timely"),
+  d(6,"扶＿＿","起来","fú qǐ lái","to help someone up"),
+  z(6,"应该","yīng gāi","should","做错了事，应该马上道歉。"),
+
+  w(7,"便条","biàn tiáo","a short note"),
+  w(7,"邻居","lín jū","neighbour"),
+  w(7,"休息","xiū xi","to rest"),
+  w(7,"电视","diàn shì","television"),
+  w(7,"眼镜","yǎn jìng","spectacles"),
+  z(7,"邻居","lín jū","neighbour","我的邻居很热心，常常帮助我们。"),
+
+  w(8,"需要","xū yào","to need"),
+  w(8,"能干","néng gàn","capable, able"),
+  w(8,"容易","róng yì","easy"),
+  w(8,"祝贺","zhù hè","to congratulate"),
+  w(8,"出汗","chū hàn","to sweat"),
+  z(8,"需要","xū yào","to need","我需要一支红色的笔。"),
+
+  w(9,"办法","bàn fǎ","a way, a method"),
+  w(9,"称赞","chēng zàn","to praise"),
+  w(9,"大象","dà xiàng","elephant"),
+  w(9,"神奇","shén qí","magical, remarkable"),
+  w(9,"夸奖","kuā jiǎng","to compliment"),
+  d(9,"想＿＿","办法","xiǎng bàn fǎ","to think of a way"),
+  z(9,"办法","bàn fǎ","a method","我想到了一个好办法。"),
+
+  /* ---------- 3B ---------- */
+  w(10,"垃圾","lā jī","rubbish, litter"),
+  w(10,"环境","huán jìng","environment, surroundings"),
+  w(10,"厕所","cè suǒ","toilet"),
+  w(10,"招呼","zhāo hu","to greet"),
+  w(10,"决定","jué dìng","to decide"),
+  w(10,"干净","gān jìng","clean"),
+  w(10,"吃惊","chī jīng","astonished"),
+  d(10,"保持＿＿","干净","bǎo chí gān jìng","to keep something clean"),
+  d(10,"打＿＿","招呼","dǎ zhāo hu","to say hello"),
+  z(10,"环境","huán jìng","environment","我们要爱护学校的环境。"),
+
+  w(11,"浪费","làng fèi","to waste"),
+  w(11,"超市","chāo shì","supermarket"),
+  w(11,"物品","wù pǐn","articles, goods"),
+  w(11,"使用","shǐ yòng","to use"),
+  w(11,"利用","lì yòng","to make use of"),
+  w(11,"购物","gòu wù","to shop"),
+  w(11,"瓶子","píng zi","bottle"),
+  d(11,"塑料＿＿","袋","sù liào dài","plastic bag"),
+  g(11,"＿＿我们不浪费水，＿＿能保护环境。","如果……就","rú guǒ … jiù","if … then"),
+  z(11,"浪费","làng fèi","to waste","我们不应该浪费食物。"),
+
+  w(12,"设计","shè jì","to design"),
+  w(12,"国旗","guó qí","national flag"),
+  w(12,"老虎","lǎo hǔ","tiger"),
+  w(12,"各种","gè zhǒng","all kinds of"),
+  w(12,"海岸","hǎi àn","coast, shore"),
+  w(12,"野餐","yě cān","picnic"),
+  w(12,"兴奋","xīng fèn","excited"),
+  d(12,"竖起大拇＿","指","dà mǔ zhǐ","thumb; to give a thumbs-up"),
+  z(12,"兴奋","xīng fèn","excited","听到这个好消息，我非常兴奋。"),
+
+  w(13,"讨论","tǎo lùn","to discuss"),
+  w(13,"任务","rèn wù","a task, a mission"),
+  w(13,"必须","bì xū","must"),
+  w(13,"山洞","shān dòng","cave"),
+  w(13,"蜜蜂","mì fēng","bee"),
+  w(13,"沙滩","shā tān","sandy beach"),
+  d(13,"完成＿＿","任务","wán chéng rèn wù","to complete a task"),
+  z(13,"必须","bì xū","must","过马路必须看红绿灯。"),
+
+  w(14,"柔软","róu ruǎn","soft"),
+  w(14,"散步","sàn bù","to take a walk"),
+  w(14,"灰色","huī sè","grey"),
+  w(14,"萝卜","luó bo","radish, carrot"),
+  w(14,"逃走","táo zǒu","to run away"),
+  w(14,"肚子","dù zi","belly, stomach"),
+  g(14,"＿＿天气很热，＿＿我还是去跑步了。","虽然……但是","suī rán … dàn shì","although … still"),
+  z(14,"散步","sàn bù","to take a walk","傍晚，我和爷爷到公园散步。"),
+
+  w(15,"简单","jiǎn dān","simple"),
+  w(15,"忍住","rěn zhù","to hold back"),
+  w(15,"感冒","gǎn mào","to catch a cold"),
+  w(15,"勇敢","yǒng gǎn","brave"),
+  w(15,"发抖","fā dǒu","to shiver, to tremble"),
+  z(15,"简单","jiǎn dān","simple","这道题目很简单，我一下子就做完了。"),
+
+  w(16,"欺负","qī fu","to bully"),
+  w(16,"宠物","chǒng wù","pet"),
+  w(16,"代替","dài tì","to replace, to stand in for"),
+  w(16,"跳舞","tiào wǔ","to dance"),
+  w(16,"想念","xiǎng niàn","to miss (someone)"),
+  w(16,"轮流","lún liú","to take turns"),
+  z(16,"轮流","lún liú","to take turns","我们轮流打扫教室。"),
+
+  w(17,"裙子","qún zi","skirt"),
+  w(17,"咖啡","kā fēi","coffee"),
+  w(17,"签名","qiān míng","signature; to sign"),
+  w(17,"检查","jiǎn chá","to check, to inspect"),
+  w(17,"消失","xiāo shī","to disappear"),
+  w(17,"减少","jiǎn shǎo","to reduce"),
+  w(17,"收藏","shōu cáng","to collect, to keep"),
+  z(17,"检查","jiǎn chá","to check","交卷前，我又检查了一遍答案。"),
+
+  /* ---------- stretch: 成语 ---------- */
+  ch("一心一意","yī xīn yī yì","wholeheartedly, with undivided attention"),
+  ch("三心二意","sān xīn èr yì","half-hearted, unable to make up one's mind"),
+  ch("兴高采烈","xìng gāo cǎi liè","in high spirits, jubilant"),
+  ch("自言自语","zì yán zì yǔ","to talk to oneself"),
+  ch("小心翼翼","xiǎo xīn yì yì","with great care, gingerly"),
+  ch("七上八下","qī shàng bā xià","in a flustered, anxious state"),
+  ch("千方百计","qiān fāng bǎi jì","by every possible means"),
+  ch("先人后己","xiān rén hòu jǐ","to put others before oneself")
+];
+
+DECK.forEach((c,i)=>c.id="c"+i);
+
+const SENTENCE_BEAT = [
+  "把今晚的一个词说给爸爸听。","用今晚的一个词造一个句子。",
+  "今晚哪个词最难？说说为什么。","用今晚的两个词讲一件事。"
+];
+const WEEKLY_PROMPT = [
+  "写一段话：今天最开心的一件事。","写一段话：介绍你最好的朋友。",
+  "写一段话：你家附近的地方。","写一段话：一只你喜欢的动物。",
+  "写一段话：一次帮助别人的经历。","写一段话：你的一个愿望。"
+];
+
+/* ---------------- storage ---------------- */
+const KEY="lantern.v1";
+let mem=null, canPersist=true;
+const blank=()=>({session:0,lesson:12,cards:{},misses:[],lastDate:null,streak:0});
+function load(){
+  if(mem)return mem;
+  try{const r=localStorage.getItem(KEY);mem=r?JSON.parse(r):blank();}
+  catch(e){canPersist=false;mem=blank();}
+  return mem;
+}
+function save(){
+  if(!canPersist)return;
+  try{localStorage.setItem(KEY,JSON.stringify(mem));}catch(e){canPersist=false;render();}
+}
+function cs(id){const s=load();return s.cards[id]||(s.cards[id]={box:0,due:0,seen:0,missed:0});}
+
+/* ---------------- scheduling ---------------- */
+const STEPS=[1,2,4,8,16];
+function pickSession(){
+  const s=load(), lesson=s.lesson;
+  const pool=DECK.filter(c=>!c.stretch);
+  const scored=pool.map(c=>{
+    const st=cs(c.id);
+    const due=st.seen===0?9999:st.due;
+    const overdue=st.seen===0?0:(s.session-st.due);
+    return {c,st,fresh:st.seen===0,overdue,inLesson:c.l===lesson,due};
+  });
+  const dueNow=scored.filter(x=>!x.fresh && x.due<=s.session)
+                     .sort((a,b)=>b.overdue-a.overdue);
+  const freshLesson=scored.filter(x=>x.fresh && x.inLesson);
+  const freshRest=scored.filter(x=>x.fresh && !x.inLesson).sort((a,b)=>a.c.l-b.c.l);
+  const out=[];
+  const take=(arr,n)=>{for(const x of arr){if(out.length>=5)break;if(n--<=0)break;out.push(x.c);}};
+  take(dueNow,2); take(freshLesson,5); take(dueNow,5); take(freshRest,5);
+  return out.slice(0,5);
+}
+function grade(card,ok,reason){
+  const s=load(), st=cs(card.id);
+  st.seen++;
+  if(ok){st.box=Math.min(st.box+1,STEPS.length-1);st.due=s.session+STEPS[st.box];}
+  else{
+    st.box=0;st.due=s.session+1;st.missed++;
+    s.misses.unshift({id:card.id,reason,n:s.session});
+    s.misses=s.misses.slice(0,150);
+  }
+  save();
+}
+
+/* ---------------- lantern glow ---------------- */
+function setGlow(n){
+  const ribs=document.querySelectorAll("#ribs .rib");
+  ribs.forEach((r,i)=>r.setAttribute("stroke",i<n?"var(--lantern)":"var(--lantern-dim)"));
+  document.getElementById("glow").setAttribute("opacity",(n/5*0.2).toFixed(2));
+}
+
+/* ---------------- views ---------------- */
+const app=document.getElementById("app");
+let view={name:"home"};
+const esc=t=>String(t).replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+const lessonOf=id=>LESSONS.find(l=>l.id===id);
+
+function go(v){view=v;render();}
+
+function render(){
+  const s=load();
+  if(view.name==="home")return home(s);
+  if(view.name==="session")return session(s);
+  if(view.name==="beat")return beat(s);
+  if(view.name==="mistakes")return mistakes(s);
+  if(view.name==="browse")return browse(s);
+  if(view.name==="data")return data(s);
+}
+
+function home(s){
+  setGlow(0);
+  const L=lessonOf(s.lesson);
+  const dueCount=DECK.filter(c=>!c.stretch&&cs(c.id).seen>0&&cs(c.id).due<=s.session).length;
+  const learned=DECK.filter(c=>cs(c.id).seen>0).length;
+  app.innerHTML=`
+    <div class="panel">
+      <p class="eyebrow">Tonight's lesson</p>
+      <p class="big-zh">第${s.lesson}课</p>
+      <p style="text-align:center;margin:0 0 14px" class="zh">${L.book} · ${esc(L.title)}</p>
+      <select id="ls" aria-label="Choose lesson">
+        ${LESSONS.map(l=>`<option value="${l.id}" ${l.id===s.lesson?"selected":""}>${l.book} 第${l.id}课 ${l.title}</option>`).join("")}
+      </select>
+    </div>
+
+    <button class="btn btn-lantern" id="start"><b>今晚五张 · Tonight's five</b><span>Five cards, five minutes${dueCount?` · ${dueCount} coming back`:""}</span></button>
+    <button class="btn" id="mist"><b>看错题 · Review misses</b><span>${s.misses.length} card${s.misses.length===1?"":"s"} to repair</span></button>
+    <button class="btn" id="brow"><b>全部词语 · All words</b><span>${learned} of ${DECK.length} seen</span></button>
+    <button class="btn" id="dat"><b>Back up / restore</b><span>${canPersist?"Saved on this device":"Not saving — see inside"}</span></button>
+
+    <p class="dim" style="margin-top:22px;text-align:center">
+      Sessions completed: ${s.session}${s.streak>1?` · ${s.streak}-day streak`:""}
+    </p>`;
+  document.getElementById("ls").onchange=e=>{s.lesson=+e.target.value;save();render();};
+  document.getElementById("start").onclick=()=>{
+    const q=pickSession();
+    if(!q.length){alert("No cards left in this lesson tonight. Try another lesson.");return;}
+    go({name:"session",q,i:0,revealed:false,marks:[],asking:false});
+  };
+  document.getElementById("mist").onclick=()=>go({name:"mistakes"});
+  document.getElementById("brow").onclick=()=>go({name:"browse",lesson:s.lesson});
+  document.getElementById("dat").onclick=()=>go({name:"data"});
+}
+
+function session(s){
+  const {q,i,revealed,marks,asking}=view;
+  const c=q[i];
+  setGlow(i);
+  const pips=q.map((_,n)=>`<div class="pip ${marks[n]===true?"on":marks[n]===false?"miss":""}"></div>`).join("");
+  const front=c.pool==="zao"
+    ? `<div class="prompt small zh">${esc(c.front)}</div>`
+    : `<div class="prompt zh">${esc(c.front)}</div>`;
+  const revealBlock=revealed?`
+    <div class="reveal">
+      <div class="answer zh">${esc(c.ans)}</div>
+      <div class="pinyin">${esc(c.py)}</div>
+      <div class="english">${esc(c.en)}</div>
+      ${c.tip?`<div class="tip zh">例：${esc(c.tip)}</div>`:""}
+    </div>`:"";
+
+  let controls;
+  if(asking){
+    controls=`
+      <p class="eyebrow" style="text-align:center;margin:20px 0 6px">Why was it missed?</p>
+      <button class="btn" data-r="meaning"><b>不懂意思</b><span>Didn't know what it means</span></button>
+      <button class="btn" data-r="chars"><b>意思懂，字不会</b><span>Knew the meaning, not the characters</span></button>
+      <button class="btn" data-r="use"><b>会字，用错了</b><span>Knew it, used it wrongly</span></button>
+      <button class="btn" data-r="skip"><b>Skip</b><span>Just move on</span></button>`;
+  }else if(revealed){
+    controls=`<div class="row" style="margin-top:16px">
+      <button class="btn btn-lantern" id="ok"><b>会 · Got it</b></button>
+      <button class="btn miss-btn" id="no"><b>不会 · Missed</b></button>
+    </div>`;
+  }else{
+    controls=`<button class="btn" id="rev" style="margin-top:16px;text-align:center"><b>看答案 · Show</b></button>`;
+  }
+
+  app.innerHTML=`
+    <div class="progress">${pips}</div>
+    <div class="card">
+      <div class="pool">${POOL_LABEL[c.pool]} · 第${c.l||"—"}课</div>
+      ${front}
+      ${revealBlock}
+    </div>
+    ${controls}
+    <p class="tapline">${i+1} / ${q.length}</p>
+    <button class="btn" id="quit" style="margin-top:20px;text-align:center"><span>End session</span></button>`;
+
+  const $=id=>document.getElementById(id);
+  if($("rev"))$("rev").onclick=()=>{view.revealed=true;render();};
+  if($("ok"))$("ok").onclick=()=>{grade(c,true);view.marks[i]=true;next();};
+  if($("no"))$("no").onclick=()=>{view.marks[i]=false;view.asking=true;render();};
+  app.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{
+    grade(c,false,b.dataset.r==="skip"?null:b.dataset.r);next();
+  });
+  $("quit").onclick=()=>go({name:"home"});
+
+  function next(){
+    if(i+1>=q.length){
+      const st=load();
+      st.session++;
+      const today=new Date().toDateString();
+      st.streak=(st.lastDate===today)?st.streak:(st.lastDate?st.streak+1:1);
+      st.lastDate=today;save();
+      go({name:"beat",words:q.filter(x=>x.pool!=="zao").map(x=>x.ans)});
+    }else{view.i=i+1;view.revealed=false;view.asking=false;render();}
+  }
+}
+
+function beat(s){
+  setGlow(5);
+  const prompt=SENTENCE_BEAT[s.session%SENTENCE_BEAT.length];
+  const weekly=(s.session%7===0);
+  app.innerHTML=`
+    <div class="panel" style="text-align:center;border-color:rgba(240,175,60,.4)">
+      <p class="eyebrow">The last minute</p>
+      <p class="big-zh" style="font-size:27px;line-height:1.5">${esc(prompt)}</p>
+      <p class="dim" style="margin-top:14px">Say it out loud to Appa. Nothing to type.</p>
+    </div>
+    <div class="panel">
+      <p class="eyebrow">Tonight's words</p>
+      <p class="zh" style="font-size:22px;line-height:1.9;margin:8px 0 0">${(view.words||[]).map(esc).join(" 　 ")}</p>
+    </div>
+    ${weekly?`<div class="panel" style="border-color:rgba(111,160,137,.5)">
+      <p class="eyebrow" style="color:var(--jade)">Weekly · ten minutes</p>
+      <p class="zh" style="font-size:20px;margin:8px 0 0">${esc(WEEKLY_PROMPT[Math.floor(s.session/7)%WEEKLY_PROMPT.length])}</p>
+      <p class="dim" style="margin-top:8px">One paragraph on paper. Use two words from this week.</p>
+    </div>`:""}
+    <button class="btn btn-lantern" id="done" style="text-align:center;margin-top:16px"><b>灯亮了 · The lantern is lit</b></button>`;
+  document.getElementById("done").onclick=()=>go({name:"home"});
+}
+
+function mistakes(s){
+  setGlow(0);
+  const seen=new Set(), rows=[];
+  for(const m of s.misses){
+    if(seen.has(m.id))continue;seen.add(m.id);
+    const c=DECK.find(x=>x.id===m.id);if(!c)continue;
+    const why={meaning:"didn't know the meaning",chars:"knew it, couldn't write it",use:"used it wrongly"}[m.reason]||"";
+    rows.push(`<div class="item">
+      <div class="h zh">${esc(c.ans)}</div>
+      <div><div class="mono" style="font-size:12.5px;color:var(--lantern)">${esc(c.py)}</div>
+      <div class="m">${esc(c.en)}${why?` — ${why}`:""}</div></div></div>`);
+  }
+  app.innerHTML=`
+    <div class="panel">
+      <p class="eyebrow">Misses, most recent first</p>
+      ${rows.length?rows.join(""):`<p class="dim" style="margin-top:12px">No misses yet. They collect here when a card is marked 不会.</p>`}
+    </div>
+    <button class="btn" id="back" style="text-align:center"><span>Back</span></button>`;
+  document.getElementById("back").onclick=()=>go({name:"home"});
+}
+
+function browse(s){
+  setGlow(0);
+  const L=view.lesson;
+  const list=DECK.filter(c=>c.l===L||(L===0&&c.stretch));
+  app.innerHTML=`
+    <div class="panel">
+      <select id="bl" aria-label="Choose lesson">
+        ${LESSONS.map(l=>`<option value="${l.id}" ${l.id===L?"selected":""}>${l.book} 第${l.id}课 ${l.title}</option>`).join("")}
+        <option value="0" ${L===0?"selected":""}>成语 · Stretch pool</option>
+      </select>
+      <div style="margin-top:14px">
+        ${list.map(c=>{
+          const st=cs(c.id);
+          return `<div class="item">
+            <div class="h zh">${esc(c.ans)}</div>
+            <div><div class="mono" style="font-size:12.5px;color:var(--lantern)">${esc(c.py)}</div>
+            <div class="m">${esc(c.en)}${st.seen?` · box ${st.box}`:""}</div></div></div>`;
+        }).join("")}
+      </div>
+    </div>
+    <button class="btn" id="back" style="text-align:center"><span>Back</span></button>`;
+  document.getElementById("bl").onchange=e=>go({name:"browse",lesson:+e.target.value});
+  document.getElementById("back").onclick=()=>go({name:"home"});
+}
+
+function data(s){
+  setGlow(0);
+  app.innerHTML=`
+    <div class="panel">
+      <p class="eyebrow">Back up</p>
+      <p class="dim">${canPersist?"Progress is saved on this device only. Copy this out now and then — a new phone or a cleared browser loses it.":"This browser is blocking storage, so tonight's progress will vanish when the tab closes. Deploy the file to a real web address (GitHub Pages works) and it will save."}</p>
+      <textarea id="dump" readonly>${esc(JSON.stringify(load()))}</textarea>
+      <button class="btn" id="copy" style="text-align:center;margin-top:8px"><span>Copy</span></button>
+    </div>
+    <div class="panel">
+      <p class="eyebrow">Restore</p>
+      <p class="dim">Paste a backup here. This replaces everything.</p>
+      <textarea id="in" placeholder="Paste backup"></textarea>
+      <button class="btn" id="rest" style="text-align:center;margin-top:8px"><span>Restore</span></button>
+    </div>
+    <button class="btn" id="back" style="text-align:center"><span>Back</span></button>`;
+  document.getElementById("copy").onclick=()=>{
+    const t=document.getElementById("dump");t.select();
+    try{document.execCommand("copy");document.getElementById("copy").innerHTML="<span>Copied</span>";}catch(e){}
+  };
+  document.getElementById("rest").onclick=()=>{
+    try{
+      const v=JSON.parse(document.getElementById("in").value);
+      if(!v||typeof v.cards!=="object")throw 0;
+      mem=v;save();go({name:"home"});
+    }catch(e){alert("That backup couldn't be read. Paste the whole thing, including the braces.");}
+  };
+  document.getElementById("back").onclick=()=>go({name:"home"});
+}
+
+render();
+</script>
+</body>
+</html>
